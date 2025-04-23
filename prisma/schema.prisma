@@ -1,0 +1,46 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model classschedule {
+  id        Int      @id @default(autoincrement())
+  className String
+  schedule  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime
+}
+
+model result {
+  id        Int      @id @default(autoincrement())
+  studentId Int
+  result    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime
+  user      user     @relation(fields: [studentId], references: [id], map: "Result_studentId_fkey")
+
+  @@index([studentId], map: "Result_studentId_fkey")
+}
+
+model timetable {
+  id        Int      @id @default(autoincrement())
+  className String
+  timetable String
+  createdAt DateTime @default(now())
+  updatedAt DateTime
+}
+
+model user {
+  id        Int      @id @default(autoincrement())
+  username  String   @unique(map: "User_username_key")
+  password  String
+  userType  String
+  email     String   @unique(map: "User_email_key")
+  createdAt DateTime @default(now())
+  updatedAt DateTime
+  result    result[]
+}
